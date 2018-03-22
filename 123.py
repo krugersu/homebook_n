@@ -1,8 +1,12 @@
 import sys
 import sqlite3
-from PyQt5.QtWidgets import QMainWindow, QTextEdit, QAction, qApp, QApplication, QDialog, QVBoxLayout, QTableView, QPushButton, QMdiArea, QMdiSubWindow
+from PyQt5.QtWidgets import QMainWindow, QTextEdit, QAction, qApp, QApplication, QDialog, QVBoxLayout, QTableView, QPushButton, QMdiArea, QMdiSubWindow, QDockWidget,QWidget
 from PyQt5 import QtCore, QtSql, QtGui
 from PyQt5.QtGui import QIcon
+
+from PyQt5.QtCore import *
+
+
 
 import meshandler
 import dbpool
@@ -24,7 +28,7 @@ class Example(QMainWindow):
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(qApp.quit)
 
-        addAction = QAction(QIcon('exit.png'), '&Показать', self)
+        addAction = QAction(QIcon('books.png'), '&Показать', self)
         # addAction.setShortcut('Ctrl+Q')
         addAction.setStatusTip('Показать библиотеку')
 
@@ -43,7 +47,33 @@ class Example(QMainWindow):
         self.toolbar.addAction(addAction)
 
         self.setGeometry(100, 100, 800, 800)
-        self.setWindowTitle('Menubar')
+        self.setWindowTitle('Home Books')
+
+
+        db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
+        db.setDatabaseName('homebook.db')
+        model1 = QtSql.QSqlTableModel()
+        model1.setTable('f_author')
+        model1.setEditStrategy(QtSql.QSqlTableModel.OnFieldChange)
+        model1.select()
+
+        view1 = QTableView()
+        view1.setModel(model1)
+        view1.setWindowTitle("Авторы")
+
+        self.treePanel = QDockWidget("Управление", self)
+        w = QWidget(self.treePanel)
+        self.treePanel.setWidget(w)
+        lay = QVBoxLayout(w)
+        lay.setSpacing(1)
+        lay.setContentsMargins(1,1,1,1)
+        lay.addWidget(view1)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.treePanel)
+        w.setLayout(lay)
+        w.setGeometry(10,10,50,50)
+        w.show()
+        # self.tree = TreeWidget(self.treePanel)
+        # lay.addWidget(self.tree)
 
         self.show()
 
@@ -64,20 +94,21 @@ class Example(QMainWindow):
         layout = QVBoxLayout()
         layout.addWidget(view1)
 
-        button = QPushButton("Add a row")
-        button.clicked.connect(addrow)
-        layout.addWidget(button)
-
-        btn1 = QPushButton("del a row")
-        btn1.clicked.connect(lambda: model.removeRow(view1.currentIndex().row()))
-        layout.addWidget(btn1)
+        # button = QPushButton("Add a row")
+        # button.clicked.connect(addrow)
+        # layout.addWidget(button)
+        #
+        # btn1 = QPushButton("del a row")
+        # btn1.clicked.connect(lambda: model.removeRow(view1.currentIndex().row()))
+        # layout.addWidget(btn1)
 
 
         dlg.setLayout(layout)
         dlg.setWindowTitle("Database Demo")
+        dlg.setGeometry(10,10,100,300)
         #dlg.setModal(self)
         self.mdiArea.addSubWindow(dlg)
-        #self.mdiArea.addSubWindow(dlg)
+
         dlg.show()
 
         #dlg.exec_()
