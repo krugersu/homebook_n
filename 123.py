@@ -29,7 +29,7 @@ class Example(QMainWindow):
         exitAction.triggered.connect(qApp.quit)
 
         addAction = QAction(QIcon('books.png'), '&Показать', self)
-        # addAction.setShortcut('Ctrl+Q')
+        addAction.setShortcut('Ctrl+Q')
         addAction.setStatusTip('Показать библиотеку')
 
         addAction.triggered.connect(self.m_showlibrary)
