@@ -50,8 +50,7 @@ class Example(QMainWindow):
         self.setWindowTitle('Home Books')
 
 
-        db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-        db.setDatabaseName('homebook.db')
+
         model1 = QtSql.QSqlTableModel()
         model1.setTable('f_author')
         model1.setEditStrategy(QtSql.QSqlTableModel.OnFieldChange)
@@ -60,6 +59,7 @@ class Example(QMainWindow):
         view1 = QTableView()
         view1.setModel(model1)
         view1.setWindowTitle("Авторы")
+        view1.setShowGrid(0)
 
         self.treePanel = QDockWidget("Управление", self)
         w = QWidget(self.treePanel)
@@ -71,17 +71,15 @@ class Example(QMainWindow):
         self.addDockWidget(Qt.LeftDockWidgetArea, self.treePanel)
         w.setLayout(lay)
         w.setGeometry(10,10,50,50)
-        w.show()
-        # self.tree = TreeWidget(self.treePanel)
-        # lay.addWidget(self.tree)
+       # w.show()
 
         self.show()
 
     def m_showlibrary(self):
 
         print("111")
-        db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-        db.setDatabaseName('homebook.db')
+        # db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
+        # db.setDatabaseName('homebook.db')
         model = QtSql.QSqlTableModel()
         delrow = -1
         initializeModel(model)
@@ -137,11 +135,13 @@ def createView(title, model):
     view.setWindowTitle(title)
     return view
 
-
+def initdb():
+    db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
+    db.setDatabaseName('homebook.db')
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-
+    initdb()
 
     ex = Example()
     sys.exit(app.exec_())
